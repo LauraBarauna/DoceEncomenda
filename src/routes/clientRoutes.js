@@ -3,7 +3,7 @@ const clientController = require('../controllers/ClientController');
 
 const router = express.Router();
 
-// Client's routes
+// Rota para criar um cliente
 router.post('/', clientController.store);
 
 module.exports = router;

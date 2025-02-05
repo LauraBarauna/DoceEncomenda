@@ -2,24 +2,30 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const clientRoutes = require('./src/routes/clientRoutes');
 
-function App () {
+function App() {
+  this.app = express();
+
+  // Construtor que inicializa as rotas e middlewares
   this.init = function () {
-    const app = express();
+    this.middlewares();
     this.routes();
   }
 
+  // Configuração dos middlewares
   this.middlewares = function() {
-    app.use(bodyParser.json());
+    this.app.use(bodyParser.json());
   }
 
+  // Configuração das rotas
   this.routes = function() {
-    app.use('/clients', clientRoutes);
+    this.app.use('/clients', clientRoutes);
   }
 
-};
+  // Chama init ao criar a instância de App
+  this.init();
+}
 
-const app = new App();
+// Instancia a aplicação
+const appInstance = new App();
 
-module.exports = app.init();
-
-
+module.exports = appInstance.app;
