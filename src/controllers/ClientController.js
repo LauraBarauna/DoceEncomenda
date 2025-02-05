@@ -1,8 +1,8 @@
 const clientModel = require('../models/ClientModel');
 
-function Client() {
+function ClientController() {
 
-    this.CreateClient = async function (res, req) {
+    this.store = async function (res, req) {
         const {first_name, last_name, email, password, age} = req.body;
 
         try {
@@ -16,6 +16,6 @@ function Client() {
 
 };
 
-const client = new Client();
+const clientController = new ClientController();
 
-module.exports = client;
+module.exports = clientController;

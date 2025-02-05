@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const clientRoutes = require('./src/routes/clientRoutes');
 
 function App () {
   this.init = function () {
@@ -12,7 +13,7 @@ function App () {
   }
 
   this.routes = function() {
-    app.use('/');
+    app.use('/clients', clientRoutes);
   }
 
 };
