@@ -9,5 +9,5 @@ function ClientModel() {
 
 const clientModel = new ClientModel();
 
-module.exports = clientModel();
+module.exports = clientModel;
 
