@@ -1,0 +1,29 @@
+# Definição geral para todos os arquivos
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Configuração específica para arquivos JSON e YAML
+[*.{json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Configuração para arquivos Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# Configuração para arquivos HTML e CSS
+[*.{html,css,scss}]
+indent_style = space
+indent_size = 2
+
+# Configuração específica para arquivos TypeScript
+[*.ts]
+indent_style = space
+indent_size = 2
