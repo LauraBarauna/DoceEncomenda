@@ -39,11 +39,31 @@ function ClientController() {
         return res.status(404).json(`Usuário ${client_id} não encontrado`);
       }
 
-      res.status(200).json(client);
+      return res.status(200).json(client);
 
     } catch (error) {
       console.error('Erro:', error); // Log para depuração
       res.status(500).json({ message: `Erro ao listar usuário ${client_id}: ${error.message}` }); // Erro mais detalhado
+    }
+
+  }
+
+  this.update = async function (req, res) {
+    const {client_id} = req.params;
+    const { first_name, last_name, email, password, age } = req.body;
+
+    if(!client || client.length === 0) {
+      return res.status(404).json(`Usuário ${client_id} não encontrado`);
+    }
+
+    try {
+      const clientNewInfos = await clientModel.updateClient(first_name, last_name, email, password, age, client_id);
+      return res.status(200).json({
+        message: `Cliente ${client_id} atualizado.`,
+        newCient: clientNewInfos,
+      });
+    } catch (error) {
+      res.status(500).json({ message: `Erro ao atualizar usuário ${client_id}: ${error.message}` }); // Erro mais detalhado
     }
 
   }
