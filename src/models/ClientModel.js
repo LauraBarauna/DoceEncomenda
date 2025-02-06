@@ -33,14 +33,22 @@ function ClientModel() {
   };
 
   this.showAllClients = async function () {
-    const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients';
 
-    try {
-      const [clients] = await db.execute(sql);
-      return clients;
-    } catch (error) {
-      throw new Error('Erro ao exibir os clientes: ' + error.message);
+    const isEmpty = await this.isTableEmpty();
+
+    if (isEmpty) {
+      throw new Error('Nenhum cliente criado na tabela clients"');
+    } else {
+      const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients';
+
+      try {
+        const [clients] = await db.execute(sql);
+        return clients;
+      } catch (error) {
+        throw new Error('Erro ao exibir os clientes: ' + error.message);
+      }
     }
+
 
   }
 
