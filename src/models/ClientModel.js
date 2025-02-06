@@ -16,6 +16,18 @@ function ClientModel() {
 
   }
 
+  this.doesClientExist = async function (client_id) {
+    const sql = 'SELECT COUNT(*) FROM clients WHERE client_id = ?';
+
+    try {
+      const [result] = await db.execute(sql, [client_id]);
+      return result[0].total !== 0;
+    } catch (error) {
+      throw new Error('Erro ao verificar a tabela: ' + error.message);
+    }
+
+  }
+
   this.createClient = async function (first_name, last_name, email, password, age) {
 
     if (!first_name || !last_name || !email || !password || !age) {
@@ -48,7 +60,23 @@ function ClientModel() {
         throw new Error('Erro ao exibir os clientes: ' + error.message);
       }
     }
+  }
 
+  this.showOneClient = async function (client_id) {
+    const clientExist = this.doesClientExist(client_id);
+
+    if(!clientExist) {
+      throw new Error(`Nenhum cliente com o id ${client_id} foi encontrado na tabela!`);
+    }
+
+    const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients WHERE client_id = ?';
+
+    try {
+      const [client] = await db.execute(sql, [client_id]);
+      return client;
+    } catch (error) {
+      throw new Error(`Erro ao exibir o cliente ${client_id}: ${error.message}`);
+    }
 
   }
 
