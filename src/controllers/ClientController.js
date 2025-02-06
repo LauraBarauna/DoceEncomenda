@@ -27,7 +27,7 @@ function ClientController() {
 
   this.show = async function (req, res) {
 
-    const { client_id } = req.body;
+    const { client_id } = req.params;
 
     try {
       const client = await clientModel.showOneClient(client_id);
