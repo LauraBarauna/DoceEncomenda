@@ -25,6 +25,19 @@ function ClientController() {
 
   };
 
+  this.show = async function (req, res) {
+
+    const { client_id } = req.body;
+
+    try {
+      const client = await clientModel.showOneClient(client_id);
+      res.status(201).json(client);
+    } catch (error) {
+      res.status(500).json({ message: `Erro ao listar usuário ${client_id}: ${error.message}` }); // Erro mais detalhado
+    }
+
+  }
+
 };
 
 const clientController = new ClientController();
