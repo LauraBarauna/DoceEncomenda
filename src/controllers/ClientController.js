@@ -14,6 +14,17 @@ function ClientController() {
 
   };
 
+  this.index = async function (req, res) {
+
+    try {
+      const clients = clientModel.showAllClients();
+      res.status(201).json(clients);
+    } catch (error) {
+      res.status(500).json({ message: `Erro ao listas usuários: ${error.message}` }); // Erro mais detalhado
+    }
+
+  };
+
 };
 
 const clientController = new ClientController();
