@@ -15,8 +15,21 @@ function ClientModel() {
     } catch (error) {
       throw new Error('Erro ao criar cliente: ' + error.message);
     }
+  };
+
+  this.showAllClients = async function () {
+    const sql = 'SELECT * FROM clients';
+
+    try {
+      const clients = await db.execute(sql);
+      return clients;
+    } catch (error) {
+      throw new Error('Erro ao exibir os clientes: ' + error.message);
+    }
+
   }
-}
+
+};
 
 const clientModel = new ClientModel();
 
