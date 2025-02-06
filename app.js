@@ -19,6 +19,7 @@ function App() {
   // Configuração das rotas
   this.routes = function() {
     this.app.use('/clients/register', clientRoutes);
+    this.app.use('/clients/index', clientRoutes);
   }
 
   // Chama init ao criar a instância de App
