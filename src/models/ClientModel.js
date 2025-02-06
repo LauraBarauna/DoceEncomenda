@@ -62,6 +62,18 @@ function ClientModel() {
       throw new Error(`Erro ao exibir o cliente ${client_id}: ${error.message}`);
     }
 
+  };
+
+  this.updateClient = async function (first_name, last_name, email, password, age, client_id) {
+    const sql = 'UPDATE clients SET first_name = ?, last_name = ?, email = ?, password = ?, age = ? WHERE client_id = ?';
+
+    try {
+      const clientNewInfos = await db.execute(sql, [first_name, last_name, email, password, age, client_id]);
+      return clientNewInfos;
+    } catch (error) {
+      throw new Error(`Erro ao atualizar o cliente ${client_id}: ${error.message}`);
+    }
+
   }
 
 };
