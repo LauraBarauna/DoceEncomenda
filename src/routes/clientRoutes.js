@@ -5,5 +5,6 @@ const router = express.Router();
 
 // Rota para criar um cliente
 router.post('/', clientController.store);
+router.get('/', clientController.index);
 
 module.exports = router;
