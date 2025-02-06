@@ -18,10 +18,10 @@ function ClientModel() {
   };
 
   this.showAllClients = async function () {
-    const sql = 'SELECT * FROM clients';
+    const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients';
 
     try {
-      const clients = await db.execute(sql);
+      const [clients] = await db.execute(sql);
       return clients;
     } catch (error) {
       throw new Error('Erro ao exibir os clientes: ' + error.message);
