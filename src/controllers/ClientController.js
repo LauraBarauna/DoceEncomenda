@@ -30,9 +30,16 @@ function ClientController() {
     const { client_id } = req.params;
 
     try {
-      const client = await clientModel.showOneClient(client_id);
-      res.status(201).json(client);
+      const [client] = await clientModel.showOneClient(client_id);
+
+      if(!client || client.length === 0) {
+        return res.status(404).json(`Usuário ${client_id} não encontrado`);
+      }
+
+      res.status(200).json(client);
+
     } catch (error) {
+      console.error('Erro:', error); // Log para depuração
       res.status(500).json({ message: `Erro ao listar usuário ${client_id}: ${error.message}` }); // Erro mais detalhado
     }
 

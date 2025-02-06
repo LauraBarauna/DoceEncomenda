@@ -20,6 +20,7 @@ function App() {
   this.routes = function() {
     this.app.use('/clients/register', clientRoutes);
     this.app.use('/clients/index', clientRoutes);
+    this.app.use('/clients/show', clientRoutes);
   }
 
   // Chama init ao criar a instância de App
