@@ -1,6 +1,21 @@
 const db = require('../database/db');
 
 function ClientModel() {
+
+  // Verificações
+
+  this.isTableEmpty = async function () {
+    const sql = 'SELECT COUNT(*) AS total FROM clients';
+
+    try {
+      const [result] = await db.execute(sql);
+      return result[0].total === 0;
+    } catch (error) {
+      throw new Error('Erro ao verificar a tabela: ' + error.message);
+    }
+
+  }
+
   this.createClient = async function (first_name, last_name, email, password, age) {
 
     if (!first_name || !last_name || !email || !password || !age) {
