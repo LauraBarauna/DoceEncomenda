@@ -7,5 +7,6 @@ const router = express.Router();
 router.post('/', clientController.store);
 router.get('/', clientController.index);
 router.get('/:client_id', clientController.show);
+router.update('/:client_id', clientController.update);
 
 module.exports = router;
