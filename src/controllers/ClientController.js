@@ -1,12 +1,15 @@
 const clientModel = require('../models/ClientModel');
+var bcrypt = require('bcryptjs');
 
 function ClientController() {
 
   this.store = async function (req, res) {  // Corrigido a ordem dos parâmetros
     const { first_name, last_name, email, password, age } = req.body;
 
+    const hashedPassword = bcrypt.hashSync(password, 8);
+
     try {
-      await clientModel.createClient(first_name, last_name, email, password, age);
+      await clientModel.createClient(first_name, last_name, email, hashedPassword, age);
       res.status(201).json({ message: `Usuário ${email} criado com sucesso!` });
     } catch (error) {
       res.status(500).json({ message: `Erro ao criar usuário ${email}: ${error.message}` }); // Erro mais detalhado

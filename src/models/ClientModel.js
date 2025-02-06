@@ -3,7 +3,6 @@ const db = require('../database/db');
 function ClientModel() {
 
   // Verificações
-
   this.isTableEmpty = async function () {
     const sql = 'SELECT COUNT(*) AS total FROM clients';
 
