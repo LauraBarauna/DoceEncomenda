@@ -58,6 +58,15 @@ function ClientModel() {
   }
 };
 
+  this.deleteClient = async function (client_id) {
+    const sql = 'DELETE FROM clients WHERE client_id = ?';
+    try {
+      return await db.execute(sql, client_id);
+    } catch (error) {
+      throw new Error(`Erro ao deletar o cliente ${client_id}: ${error.message}`);
+    }
+  }
+
 const clientModel = new ClientModel();
 
 module.exports = clientModel;

@@ -81,6 +81,16 @@ function ClientController() {
       return res.status(500).json({ error: error.message });
     }
   }
+
+  this.delete = async function (client_id) {
+    try {
+      const deleteClient = await clientModel.deleteClient(client_id);
+      console.log(`delete ${deleteClient}`)
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
 };
 
 const clientController = new ClientController();
