@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const clientRoutes = require('./src/routes/clientRoutes');
+const addressesRouter = require('./src/routes/addressesRouter');
 
 function App() {
   this.app = express();
@@ -23,6 +24,8 @@ function App() {
     this.app.use('/clients/show', clientRoutes);
     this.app.use('/clients/update', clientRoutes);
     this.app.use('/clients/delete', clientRoutes);
+
+    this.app.use('/addresses/register', addressesRouter);
   }
 
   // Chama init ao criar a instância de App
