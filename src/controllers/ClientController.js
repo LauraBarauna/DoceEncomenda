@@ -12,7 +12,7 @@ function ClientController() {
       await clientModel.createClient(first_name, last_name, email, hashedPassword, age);
       res.status(201).json({ message: `User ${email} created successfully!` });
     } catch (error) {
-      res.status(500).json({ message: `Error creating user ${email}: ${error.message}` }); // More detailed error
+      return res.status(500).json({ error: error.message });
     }
 
   };
@@ -23,7 +23,7 @@ function ClientController() {
       const clients = await clientModel.showAllClients();
       res.status(201).json(clients);
     } catch (error) {
-      res.status(500).json({ message: `Error listing users: ${error.message}` }); // More detailed error
+      return res.status(500).json({ error: error.message });
     }
 
   };
@@ -38,14 +38,13 @@ function ClientController() {
       console.log(`show ${client}`)
 
       if (!client || client.length === 0) {
-        return res.status(404).json(`User ${client_id} not found`);
+        return res.status(404).json({ error: `User ${client_id} not found` });
       }
 
       return res.status(200).json(client);
 
     } catch (error) {
-      console.error('Error:', error); // Log for debugging
-      res.status(500).json({ message: `Error listing user ${client_id}: ${error.message}` }); // More detailed error
+      return res.status(500).json({ error: error.message });
     }
 
   }
