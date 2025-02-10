@@ -35,7 +35,9 @@ function ClientController() {
     try {
       const [client] = await clientModel.showOneClient(client_id);
 
-      if(!client || client.length === 0) {
+      console.log(`show ${client}`)
+
+      if (!client || client.length === 0) {
         return res.status(404).json(`Usuário ${client_id} não encontrado`);
       }
 
@@ -49,25 +51,36 @@ function ClientController() {
   }
 
   this.update = async function (req, res) {
-    const {client_id} = req.params;
-    const { first_name, last_name, email, password, age } = req.body;
-
-    if(!client || client.length === 0) {
-      return res.status(404).json(`Usuário ${client_id} não encontrado`);
-    }
-
     try {
-      const clientNewInfos = await clientModel.updateClient(first_name, last_name, email, password, age, client_id);
-      return res.status(200).json({
-        message: `Cliente ${client_id} atualizado.`,
-        newCient: clientNewInfos,
-      });
+      const { client_id } = req.params;
+      const { first_name, last_name, email, password, age } = req.body;
+
+      const dadosAtualizados = {};
+      if (first_name) dadosAtualizados.first_name = first_name;
+      if (last_name) dadosAtualizados.last_name = last_name;
+      if (email) dadosAtualizados.email = email;
+      if (password) dadosAtualizados.password = bcrypt.hashSync(password, 8);
+      if (age) dadosAtualizados.age = age;
+
+
+      if (Object.keys(dadosAtualizados).length === 0) {
+        return res.status(400).json({ error: "Nenhum campo para atualizar" });
+      };
+
+      const resultado = await clientModel.updateClient(client_id, dadosAtualizados);
+      const doesClientExist = resultado.affectedRows;
+
+
+      if(doesClientExist === 0) {
+        return res.status(500).json({ error: `Cliente ${client_id} não existe` });
+      }
+
+      return res.json(resultado);
+
     } catch (error) {
-      res.status(500).json({ message: `Erro ao atualizar usuário ${client_id}: ${error.message}` }); // Erro mais detalhado
+      return res.status(500).json({ error: error.message });
     }
-
   }
-
 };
 
 const clientController = new ClientController();

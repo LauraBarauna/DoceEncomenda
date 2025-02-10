@@ -1,21 +1,6 @@
 const db = require('../database/db');
 
 function ClientModel() {
-
-  // Verificações
-  this.isTableEmpty = async function () {
-    const sql = 'SELECT COUNT(*) AS total FROM clients';
-
-    try {
-      const [result] = await db.execute(sql);
-      return result[0].total === 0;
-    } catch (error) {
-      throw new Error('Erro ao verificar a tabela: ' + error.message);
-    }
-
-  }
-
-
   this.createClient = async function (first_name, last_name, email, password, age) {
 
     if (!first_name || !last_name || !email || !password || !age) {
@@ -34,24 +19,17 @@ function ClientModel() {
 
   this.showAllClients = async function () {
 
-    const isEmpty = await this.isTableEmpty();
+    const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients';
 
-    if (isEmpty) {
-      throw new Error('Nenhum cliente criado na tabela clients"');
-    } else {
-      const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients';
-
-      try {
-        const [clients] = await db.execute(sql);
-        return clients;
-      } catch (error) {
-        throw new Error('Erro ao exibir os clientes: ' + error.message);
-      }
+    try {
+      const [clients] = await db.execute(sql);
+      return clients;
+    } catch (error) {
+      throw new Error('Erro ao exibir os clientes: ' + error.message);
     }
   }
 
   this.showOneClient = async function (client_id) {
-
     const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients WHERE client_id = ?';
 
     try {
@@ -64,18 +42,20 @@ function ClientModel() {
 
   };
 
-  this.updateClient = async function (first_name, last_name, email, password, age, client_id) {
-    const sql = 'UPDATE clients SET first_name = ?, last_name = ?, email = ?, password = ?, age = ? WHERE client_id = ?';
-
+  this.updateClient = async function (client_id, dados) {
     try {
-      const clientNewInfos = await db.execute(sql, [first_name, last_name, email, password, age, client_id]);
-      return clientNewInfos;
+      const campos = Object.keys(dados).map((key) => `${key} = ?`).join(", ");
+      const valores = Object.values(dados);
+      valores.push(client_id);
+
+      const query = `UPDATE clients SET ${campos} WHERE client_id = ?`;
+      const [newClientInfos] = await db.query(query, valores);
+
+      return newClientInfos;
     } catch (error) {
-      throw new Error(`Erro ao atualizar o cliente ${client_id}: ${error.message}`);
+      throw new Error(`Erro ao exibir o cliente ${client_id}: ${error.message}`);
     }
-
   }
-
 };
 
 const clientModel = new ClientModel();
