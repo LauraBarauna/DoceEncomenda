@@ -26,10 +26,10 @@ function AddressesController() {
     const { client_id } = req.params;
 
     try {
-      const [clietsAddresses] = adressesModel.showClientAddresses(client_id);
+      const clietsAddresses = await adressesModel.showClientAddresses(client_id);
 
       if( !clietsAddresses || clietsAddresses.length === 0 ) {
-        return res.status(404).json({ error: `Client ${client_id} does not exist!` });
+        return res.status(404).json({ error: `Client ${client_id} does not exist or does not have an addresses!` });
       }
 
       return res.status(200).json(clietsAddresses);

@@ -22,10 +22,10 @@ function AdressesModel() {
     const sql = "SELECT * FROM addresses WHERE client_id = ?";
 
     try {
-      const result = await db.execute(sql, [clientId]);
+      const [result] = await db.execute(sql, [clientId]);
       return result;
     } catch (error) {
-      throw new Error(`Error showing ${clientId} addresses` + error.message);
+      throw new Error(`Error displaying ${clientId} addresses` + error.message);
     }
 
   }
