@@ -17,6 +17,18 @@ function AdressesModel() {
     }
 
   }
+
+  this.showClientAddresses = async function (clientId) {
+    const sql = "SELECT * FROM addresses WHERE client_id = ?";
+
+    try {
+      const result = await db.execute(sql, [clientId]);
+      return result;
+    } catch (error) {
+      throw new Error(`Error showing ${clientId} addresses` + error.message);
+    }
+
+  }
 };
 
 const adressesModel = new AdressesModel();
