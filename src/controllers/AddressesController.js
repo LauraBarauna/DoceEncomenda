@@ -3,10 +3,12 @@ const adressesModel = require('../models/AddressesModel');
 function AddressesController() {
   this.store = async function (req, res) {
     const { client_id } = req.params;
-    const { label, street, city, state, complement, number, cep, phone } = req.body;
+    let { label, street, city, state, complement, number, cep, phone } = req.body;
+
+    console.log(`label ${label}`)
 
     if(!label || !street || !city || !state || !cep || !phone) {
-      return res.status().json({error: `Fields: Label, street, city, state, cep and phone are requerid!`});
+      return res.status(500).json({error: `Fields: Label, street, city, state, cep and phone are requerid!`});
     };
 
     if (complement === undefined) complement = null;
