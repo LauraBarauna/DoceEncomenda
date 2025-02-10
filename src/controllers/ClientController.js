@@ -72,7 +72,7 @@ function ClientController() {
 
 
       if(doesClientExist === 0) {
-        return res.status(500).json({ error: `Cliente ${client_id} não existe` });
+        return res.status(404).json({ error: `Cliente ${client_id} não existe` });
       }
 
       return res.json(resultado);
@@ -82,10 +82,18 @@ function ClientController() {
     }
   }
 
-  this.delete = async function (client_id) {
+  this.delete = async function (req, res) {
     try {
-      const deleteClient = await clientModel.deleteClient(client_id);
-      console.log(`delete ${deleteClient}`)
+      const { client_id } = req.params;
+
+      const resultado = await clientModel.deleteClient(client_id);
+      const doesClientExist = resultado.affectedRows;
+
+      if(doesClientExist === 0) {
+        return res.status(404).json({ error: `Cliente ${client_id} não existe` });
+      };
+
+      return res.status(200).json(`Cliente ${client_id} deletado`);
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
