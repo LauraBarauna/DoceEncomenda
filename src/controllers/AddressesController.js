@@ -39,6 +39,25 @@ function AddressesController() {
     }
   }
 
+  this.delete = async function (req, res) {
+    const { address_id } = req.params;
+
+    try {
+
+      const deletedAddress = await adressesModel.deleteAddresses(address_id);
+
+      if( !deletedAddress || deletedAddress.length === 0 ) {
+        return res.status(404).json({ error: `Address ${address_id} does not exist!` });
+      };
+
+      return res.status(200).json(`Address ${address_id} deleted successfully!`);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+  }
+
 }
 
 const addressesController = new AddressesController();
