@@ -29,6 +29,18 @@ function AdressesModel() {
     }
 
   }
+
+  this.deleteAddresses = async function (addressId) {
+    const sql = "DELETE FROM addresses WHERE address_id = ?";
+
+    try {
+      const [result] = await db.execute(sql, [addressId]);
+      return result;
+    } catch (error) {
+      throw new Error(`Error deleting ${addressId} addresses` + error.message);
+    }
+
+  }
 };
 
 const adressesModel = new AdressesModel();
