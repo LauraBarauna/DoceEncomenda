@@ -40,13 +40,14 @@ function AddressesController() {
   }
 
   this.delete = async function (req, res) {
+    const { client_id } = req.params;
     const { address_id } = req.params;
 
     try {
 
-      const deletedAddress = await adressesModel.deleteAddresses(address_id);
+      const deletedAddress = await adressesModel.deleteAddresses(client_id, address_id);
 
-      if( !deletedAddress || deletedAddress.length === 0 ) {
+      if( deletedAddress.affectedRows === 0 ) {
         return res.status(404).json({ error: `Address ${address_id} does not exist!` });
       };
 

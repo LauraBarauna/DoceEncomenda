@@ -30,11 +30,11 @@ function AdressesModel() {
 
   }
 
-  this.deleteAddresses = async function (addressId) {
-    const sql = "DELETE FROM addresses WHERE address_id = ?";
+  this.deleteAddresses = async function (clientId, addressId) {
+    const sql = "DELETE FROM addresses WHERE client_id = ? AND address_id = ?";
 
     try {
-      const [result] = await db.execute(sql, [addressId]);
+      const [result] = await db.execute(sql, [clientId, addressId]);
       return result;
     } catch (error) {
       throw new Error(`Error deleting ${addressId} addresses` + error.message);
