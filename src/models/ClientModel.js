@@ -33,8 +33,7 @@ function ClientModel() {
     const sql = 'SELECT client_id, first_name, last_name, email, age, created_at, updated_at FROM clients WHERE client_id = ?';
 
     try {
-      const [client] = await db.execute(sql, [clientId]);
-      console.log(client)
+      const client = await db.execute(sql, [clientId]);
       return client;
     } catch (error) {
       throw new Error(`Error displaying client ${clientId}: ${error.message}`);

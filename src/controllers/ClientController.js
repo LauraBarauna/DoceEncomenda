@@ -35,10 +35,8 @@ function ClientController() {
     try {
       const [client] = await clientModel.showOneClient(client_id);
 
-      console.log(`show ${client}`)
-
       if (!client || client.length === 0) {
-        return res.status(404).json({ error: `User ${client_id} not found` });
+        return res.status(404).json({ error: `Client ${client_id} not found` });
       }
 
       return res.status(200).json(client);

@@ -1,4 +1,5 @@
 const adressesModel = require('../models/AddressesModel');
+const clientModel = require('../models/ClientModel');
 
 function AddressesController() {
   this.store = async function (req, res) {
@@ -26,10 +27,17 @@ function AddressesController() {
     const { client_id } = req.params;
 
     try {
+
+      const [client] = await clientModel.showOneClient(client_id);
+
+      if (!client || client.length === 0) {
+        return res.status(404).json({ error: `Client ${client_id} not found` });
+      };
+
       const clietsAddresses = await adressesModel.showClientAddresses(client_id);
 
       if( !clietsAddresses || clietsAddresses.length === 0 ) {
-        return res.status(404).json({ error: `Client ${client_id} does not exist or does not have an addresses!` });
+        return res.status(404).json({ error: `Client ${client_id} does not have an address!` });
       }
 
       return res.status(200).json(clietsAddresses);
