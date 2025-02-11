@@ -6,8 +6,6 @@ function AddressesController() {
     const { client_id } = req.params;
     let { label, street, city, state, complement, number, cep, phone } = req.body;
 
-    console.log(`label ${label}`)
-
     if(!label || !street || !city || !state || !cep || !phone) {
       return res.status(500).json({error: `Fields: Label, street, city, state, cep and phone are requerid!`});
     };
@@ -16,6 +14,13 @@ function AddressesController() {
     if (number === undefined) number = null;
 
     try {
+
+      const addressesCount = await adressesModel.doesClientHaveThreeAddresses(client_id);
+
+      if(addressesCount) {
+        return res.status(500).json({error: `Client ${client_id} already have 3 address!`});
+      }
+
       const newAddress = await adressesModel.createAddress(label, street, city, state, complement, number, cep, phone, client_id);
       res.status(201).json({ message: `Address ${label} created successfully!` });
     } catch (error) {

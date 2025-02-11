@@ -1,6 +1,19 @@
 const db = require('../database/db');
 
 function AdressesModel() {
+
+  this.doesClientHaveThreeAddresses = async function (clientId) {
+    const sql = 'SELECT COUNT(*) AS TOTAL FROM addresses WHERE client_id = ?';
+
+    try {
+      const [result] = await db.execute(sql, [clientId]);
+      return result[0].TOTAL >= 3;
+    } catch (error) {
+      throw new Error(`Error verifying how many addresses client ${clientId} has: ${error.message}`);
+    }
+  }
+
+
   this.createAddress = async function (label, street, city, state, complement, number, cep, phone, clientId) {
     const sql = 'INSERT INTO addresses (label, street, city, state, complement, number, cep, phone, client_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
