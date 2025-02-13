@@ -52,8 +52,26 @@ function AdressesModel() {
     } catch (error) {
       throw new Error(`Error deleting ${addressId} addresses` + error.message);
     }
+  }
+
+  this.updateAddress = async function (clientId, addressId, data) {
+
+    try {
+      const fields = Object.keys(data).map((key) => `${key} = ?`).join(", ");
+      const values = Object.values(data);
+      values.push(clientId, addressId);
+
+      const sql = `UPDATE addresses SET ${fields} WHERE client_id = ? AND address_id = ?`;
+      const newAddressInfos = await db.query(sql, values);
+
+      return newAddressInfos;
+
+    } catch (error) {
+      throw new Error(`Error updating ${addressId} addresses` + error.message);
+    };
 
   }
+
 };
 
 const adressesModel = new AdressesModel();
