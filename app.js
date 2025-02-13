@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const clientRoutes = require('./src/routes/clientRoutes');
 const addressesRouter = require('./src/routes/addressesRouter');
-const ordersController = require('./src/routes/ordersRouter');
+const ordersRouter = require('./src/routes/ordersRouter');
 
 function App() {
   this.app = express();
@@ -30,6 +30,8 @@ function App() {
     this.app.use('/addresses/show', addressesRouter);
     this.app.use('/addresses/delete', addressesRouter);
     this.app.use('/addresses/update', addressesRouter);
+
+    this.app.use('/orders/create', ordersRouter)
 
   }
 
