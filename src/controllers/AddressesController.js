@@ -6,8 +6,8 @@ function AddressesController() {
     const { client_id } = req.params;
     let { label, street, city, state, complement, number, cep, phone } = req.body;
 
-    if(!label || !street || !city || !state || !cep || !phone) {
-      return res.status(500).json({error: `Fields: Label, street, city, state, cep and phone are requerid!`});
+    if (!label || !street || !city || !state || !cep || !phone) {
+      return res.status(500).json({ error: `Fields: Label, street, city, state, cep and phone are requerid!` });
     };
 
     if (complement === undefined) complement = null;
@@ -17,8 +17,8 @@ function AddressesController() {
 
       const addressesCount = await adressesModel.doesClientHaveThreeAddresses(client_id);
 
-      if(addressesCount) {
-        return res.status(500).json({error: `Client ${client_id} already have 3 address!`});
+      if (addressesCount) {
+        return res.status(500).json({ error: `Client ${client_id} already have 3 address!` });
       }
 
       const newAddress = await adressesModel.createAddress(label, street, city, state, complement, number, cep, phone, client_id);
@@ -41,7 +41,7 @@ function AddressesController() {
 
       const clietsAddresses = await adressesModel.showClientAddresses(client_id);
 
-      if( !clietsAddresses || clietsAddresses.length === 0 ) {
+      if (!clietsAddresses || clietsAddresses.length === 0) {
         return res.status(404).json({ error: `Client ${client_id} does not have an address!` });
       }
 
@@ -60,7 +60,7 @@ function AddressesController() {
 
       const deletedAddress = await adressesModel.deleteAddresses(client_id, address_id);
 
-      if( deletedAddress.affectedRows === 0 ) {
+      if (deletedAddress.affectedRows === 0) {
         return res.status(404).json({ error: `Address ${address_id} does not exist!` });
       };
 
@@ -73,29 +73,41 @@ function AddressesController() {
   };
 
   this.update = async function (req, res) {
-    const { client_id } = req.params;
-    const { address_id } = req.params;
-
-    const { label, street, city, state, complement, number, cep, phone } = req.body;
-
-    const updatedData = {};
-    if(label) updatedData.label = label;
-    if(street) updatedData.street = street;
-    if(city) updatedData.city = city;
-    if(state) updatedData.state = state;
-    if(complement) updatedData.complement = complement;
-    if(number) updatedData.number = number;
-    if(cep) updatedData.cep = cep;
-    if(phone) updatedData.phone = phone;
-
-    if(Object.keys(updatedData).length === 0 ) {
-      return res.status(400).json({ error: "No fields to update" });
-    };
 
     try {
-      const [result] = await adressesModel.updateAddress(client_id, address_id, updatedData);
+      const { client_id } = req.params;
+      const { address_id } = req.params;
 
-      return res.json(result);
+      const [client] = await clientModel.showOneClient(client_id);
+
+      if (!client || client.length === 0) {
+        return res.status(404).json({ error: `Client ${client_id} not found` });
+      };
+
+      const { label, street, city, state, complement, number, cep, phone } = req.body;
+
+      const updatedData = {};
+      if (label) updatedData.label = label;
+      if (street) updatedData.street = street;
+      if (city) updatedData.city = city;
+      if (state) updatedData.state = state;
+      if (complement) updatedData.complement = complement;
+      if (number) updatedData.number = number;
+      if (cep) updatedData.cep = cep;
+      if (phone) updatedData.phone = phone;
+
+      if (Object.keys(updatedData).length === 0) {
+        return res.status(400).json({ error: "No fields to update" });
+      };
+
+      const [result] = await adressesModel.updateAddress(client_id, address_id, updatedData);
+      const doesClientHaveTable = result.affectedRows === 0 ? false : true;
+
+      if(!doesClientHaveTable) {
+        return res.status(400).json({ error: `Client ${client_id} does not have that address!` });
+      }
+
+      return res.json({ message: `Client ${client_id} updated address ${address_id} successfully!`});
 
     } catch (error) {
       return res.status(500).json({ error: error.message });
