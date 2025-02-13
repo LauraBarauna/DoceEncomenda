@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/:client_id', addressesController.store);
 router.get('/:client_id', addressesController.show);
 router.delete('/:client_id/:address_id', addressesController.delete);
+router.put('/:client_id/:address_id', addressesController.update);
 
 module.exports = router;
 

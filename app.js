@@ -28,6 +28,7 @@ function App() {
     this.app.use('/addresses/register', addressesRouter);
     this.app.use('/addresses/show', addressesRouter);
     this.app.use('/addresses/delete', addressesRouter);
+    this.app.use('/addresses/update', addressesRouter);
 
   }
 
