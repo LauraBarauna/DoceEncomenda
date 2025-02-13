@@ -15,9 +15,9 @@ function AddressesController() {
 
     try {
 
-      const addressesCount = await adressesModel.doesClientHaveThreeAddresses(client_id);
+      const addressesCount = await adressesModel.howManyAddressesDoesClientHave(client_id);
 
-      if (addressesCount) {
+      if (addressesCount === 3) {
         return res.status(500).json({ error: `Client ${client_id} already have 3 address!` });
       }
 
