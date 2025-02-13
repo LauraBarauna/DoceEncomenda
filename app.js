@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const clientRoutes = require('./src/routes/clientRoutes');
 const addressesRouter = require('./src/routes/addressesRouter');
+const ordersController = require('./src/routes/ordersRouter');
 
 function App() {
   this.app = express();
