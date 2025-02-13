@@ -70,6 +70,37 @@ function AddressesController() {
       return res.status(500).json({ error: error.message });
     }
 
+  };
+
+  this.update = async function (req, res) {
+    const { client_id } = req.params;
+    const { address_id } = req.params;
+
+    const { label, street, city, state, complement, number, cep, phone } = req.body;
+
+    const updatedData = {};
+    if(label) updatedData.label = label;
+    if(street) updatedData.street = street;
+    if(city) updatedData.city = city;
+    if(state) updatedData.state = state;
+    if(complement) updatedData.complement = complement;
+    if(number) updatedData.number = number;
+    if(cep) updatedData.cep = cep;
+    if(phone) updatedData.phone = phone;
+
+    if(Object.keys(updatedData).length === 0 ) {
+      return res.status(400).json({ error: "No fields to update" });
+    };
+
+    try {
+      const [result] = await adressesModel.updateAddress(client_id, address_id, updatedData);
+
+      return res.json(result);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
   }
 
 }
