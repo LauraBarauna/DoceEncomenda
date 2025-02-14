@@ -6,7 +6,7 @@ function OrdersController() {
 
     try {
 
-      const { client_id } = req.params;
+      const client_id = req.client_id;
       let {label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, label_address} = req.body;
 
       const clientAddressCount = await adressesModel.howManyAddressesDoesClientHave(client_id);

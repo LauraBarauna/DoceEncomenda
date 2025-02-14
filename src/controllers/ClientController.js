@@ -31,7 +31,7 @@ function ClientController() {
 
   this.show = async function (req, res) {
 
-    const { client_id } = req.params;
+    const client_id = req.client_id;
 
     try {
       const [client] = await clientModel.showOneClient(client_id);
@@ -50,7 +50,7 @@ function ClientController() {
 
   this.update = async function (req, res) {
     try {
-      const { client_id } = req.params;
+      const client_id = req.client_id;
       const { first_name, last_name, email, password, age } = req.body;
 
       const updatedData = {};
@@ -80,7 +80,7 @@ function ClientController() {
 
   this.delete = async function (req, res) {
     try {
-      const { client_id } = req.params;
+      const client_id = req.client_id;
 
       const result = await clientModel.deleteClient(client_id);
       const doesClientExist = result.affectedRows;

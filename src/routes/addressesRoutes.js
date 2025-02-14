@@ -1,12 +1,13 @@
 const express = require('express');
 const addressesController = require('../controllers/AddressesController');
+const middlewares = require('../middlewares/AllMiddlerares');
 
 const router = express.Router();
 
-router.post('/:client_id', addressesController.store);
-router.get('/:client_id', addressesController.show);
-router.delete('/:client_id/:address_id', addressesController.delete);
-router.put('/:client_id/:address_id', addressesController.update);
+router.post('/register', middlewares.authenticateClient, addressesController.store);
+router.get('/show', middlewares.authenticateClient, addressesController.show);
+router.delete('/delete/:address_id', middlewares.authenticateClient, addressesController.delete);
+router.put('/update/:address_id', middlewares.authenticateClient, addressesController.update);
 
 module.exports = router;
 

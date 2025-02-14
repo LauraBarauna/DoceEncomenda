@@ -7,8 +7,8 @@ const router = express.Router();
 // Route to create a client
 router.post('/', clientController.store);
 router.get('/', clientController.index);
-router.get('/:client_id', middlewares.authenticateClient, clientController.show);
-router.put('/:client_id', clientController.update);
-router.delete('/:client_id', clientController.delete);
+router.get('/show', middlewares.authenticateClient, clientController.show);
+router.put('/update', middlewares.authenticateClient, clientController.update);
+router.delete('/delete', middlewares.authenticateClient, clientController.delete);
 
 module.exports = router;

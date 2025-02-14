@@ -23,16 +23,16 @@ function App() {
   this.routes = function() {
     this.app.use('/clients/register', clientRoutes);
     this.app.use('/clients/index', clientRoutes);
-    this.app.use('/clients/show', clientRoutes);
-    this.app.use('/clients/update', clientRoutes);
-    this.app.use('/clients/delete', clientRoutes);
+    this.app.use('/clients', clientRoutes);
+    this.app.use('/clients', clientRoutes);
+    this.app.use('/clients', clientRoutes);
 
-    this.app.use('/addresses/register', addressesRoutes);
-    this.app.use('/addresses/show', addressesRoutes);
-    this.app.use('/addresses/delete', addressesRoutes);
-    this.app.use('/addresses/update', addressesRoutes);
+    this.app.use('/addresses', addressesRoutes);
+    this.app.use('/addresses', addressesRoutes);
+    this.app.use('/addresses', addressesRoutes);
+    this.app.use('/addresses', addressesRoutes);
 
-    this.app.use('/orders/create', ordersRoutes);
+    this.app.use('/orders', ordersRoutes);
 
     this.app.use('/login', authenticationRoutes);
 

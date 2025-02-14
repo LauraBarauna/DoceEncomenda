@@ -3,7 +3,7 @@ const clientModel = require('../models/ClientModel');
 
 function AddressesController() {
   this.store = async function (req, res) {
-    const { client_id } = req.params;
+    const client_id = req.client_id;
     let { label, street, city, state, complement, number, cep, phone } = req.body;
 
     if (!label || !street || !city || !state || !cep || !phone) {
@@ -29,7 +29,7 @@ function AddressesController() {
   }
 
   this.show = async function (req, res) {
-    const { client_id } = req.params;
+    const client_id = req.client_id;
 
     try {
 
@@ -53,7 +53,7 @@ function AddressesController() {
   }
 
   this.delete = async function (req, res) {
-    const { client_id } = req.params;
+    const client_id = req.client_id;
     const { address_id } = req.params;
 
     try {
@@ -75,7 +75,7 @@ function AddressesController() {
   this.update = async function (req, res) {
 
     try {
-      const { client_id } = req.params;
+      const client_id = req.client_id;
       const { address_id } = req.params;
 
       const [client] = await clientModel.showOneClient(client_id);

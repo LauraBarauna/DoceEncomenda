@@ -19,7 +19,6 @@ function AdressesModel() {
     const sql = 'SELECT address_id FROM addresses WHERE label = ? AND client_id = ?';
     try {
       const [result] = await db.execute(sql, [labelAddress, clientId]);
-      console.log(`log model ${result}`)
       return result.length > 0 ? result[0].address_id : null;
     } catch (error) {
       throw new Error(`Error finding pk by address label ${error.message}`);
