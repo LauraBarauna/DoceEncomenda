@@ -25,6 +25,7 @@ function App() {
     this.app.use('/clients/show', clientRoutes);
     this.app.use('/clients/update', clientRoutes);
     this.app.use('/clients/delete', clientRoutes);
+    this.app.use('/clients', clientRoutes);
 
     this.app.use('/addresses/register', addressesRouter);
     this.app.use('/addresses/show', addressesRouter);
