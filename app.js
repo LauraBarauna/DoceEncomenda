@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const clientRoutes = require('./src/routes/clientRoutes');
-const addressesRouter = require('./src/routes/addressesRouter');
-const ordersRouter = require('./src/routes/ordersRouter');
+const addressesRoutes = require('./src/routes/addressesRoutes');
+const ordersRoutes = require('./src/routes/ordersRoutes');
 const authenticationRoutes = require('./src/routes/authenticationRoutes');
 
 function App() {
@@ -27,12 +27,12 @@ function App() {
     this.app.use('/clients/update', clientRoutes);
     this.app.use('/clients/delete', clientRoutes);
 
-    this.app.use('/addresses/register', addressesRouter);
-    this.app.use('/addresses/show', addressesRouter);
-    this.app.use('/addresses/delete', addressesRouter);
-    this.app.use('/addresses/update', addressesRouter);
+    this.app.use('/addresses/register', addressesRoutes);
+    this.app.use('/addresses/show', addressesRoutes);
+    this.app.use('/addresses/delete', addressesRoutes);
+    this.app.use('/addresses/update', addressesRoutes);
 
-    this.app.use('/orders/create', ordersRouter);
+    this.app.use('/orders/create', ordersRoutes);
 
     this.app.use('/login', authenticationRoutes);
 
