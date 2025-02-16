@@ -38,8 +38,41 @@ function OrdersController() {
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
+  };
+
+  this.show = async function (req, res) {
+    const client_id = req.client_id;
+    const { order_id } = req.params;
+
+    try {
+
+      const [order] = await ordersModel.showClientOrder(client_id, order_id);
+
+      if(!order || order.length === 0) {
+        return res.status(404).json({message: `The order ${order_id} does not exist!`});
+      };
+
+      const ordersKeys = Object.keys(order[0]).slice(0, 12);
+      const ordersValues = Object.values(order[0]).slice(0, 12);
+
+      const addressKeys = Object.keys(order[0]).slice(12, 20);
+      const addressValues = Object.values(order[0]).slice(12, 20);
+
+      const obj = [{
+        order: Object.fromEntries(ordersKeys.map((key, i) => [key, ordersValues[i]])),
+        address: Object.fromEntries(addressKeys.map((key, i) => [key, addressValues[i]]))
+      }];
+
+
+      return res.status(200).json(obj);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
 
   }
+
+
 }
 
 const ordersController = new OrdersController();

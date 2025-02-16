@@ -1,6 +1,6 @@
 const db = require('../database/db');
 
-function OrdersModel () {
+function OrdersModel() {
   this.createOrder = async function (label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, client_id, address_id) {
     const sql = 'INSERT INTO orders (label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, client_id, address_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -11,8 +11,46 @@ function OrdersModel () {
     } catch (error) {
       throw new Error('Error creating order: ' + error.message);
     }
+  };
+
+  this.showClientOrder = async function name(clientId, OrderId) {
+    const sql = `
+    SELECT
+      o.label,
+      o.sweet_type,
+      o.flavor,
+      o.quantity,
+      o.filling,
+      o.allergens,
+      o.special_request,
+      o.payment_method,
+      o.payment_status,
+      o.total_amount,
+      o.status,
+      o.delivery_date,
+      a.label AS address_label,
+      a.street,
+      a.city,
+      a.state,
+      a.complement,
+      a.number,
+      a.cep,
+      a.phone
+    FROM orders o
+    JOIN addresses a ON o.address_id = a.address_id
+    WHERE o.client_id = ? AND o.order_id = ?;
+    `;
+
+    try {
+      const order = await db.execute(sql, [clientId, OrderId]);
+
+      return order;
+    } catch (error) {
+      throw new Error('Error showing order: ' + error.message);
+    }
 
   }
+
 }
 
 const ordersModel = new OrdersModel();

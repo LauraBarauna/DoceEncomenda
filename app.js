@@ -33,6 +33,7 @@ function App() {
     this.app.use('/addresses', addressesRoutes);
 
     this.app.use('/orders', ordersRoutes);
+    this.app.use('/orders/show', ordersRoutes);
 
     this.app.use('/login', authenticationRoutes);
 
