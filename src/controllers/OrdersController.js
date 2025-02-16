@@ -69,6 +69,43 @@ function OrdersController() {
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
+  };
+
+  this.index = async function (req, res) {
+
+    try {
+
+      const [orders] = await ordersModel.showAllOrders();
+
+      if(!orders || orders.length === 0) {
+        return res.status(404).json({message: `There is no order`});
+      };
+
+      const separatedData = orders.map(order => {
+
+        const clientKeys = Object.keys(order).slice(0, 3);
+        const clientValues = Object.values(order).slice(0, 3);
+
+        const orderKeys = Object.keys(order).slice(3, 16);
+        const orderValues = Object.values(order).slice(3, 16);
+
+        const addressKeys = Object.keys(order).slice(16, 24);
+        const addressValues = Object.values(order).slice(16, 24);
+
+        return {
+          client: Object.fromEntries(clientKeys.map((key, i) => [key, clientValues[i]])),
+          order: Object.fromEntries(orderKeys.map((key, i) => [key, orderValues[i]])),
+          address: Object.fromEntries(addressKeys.map((key, i) => [key, addressValues[i]]))
+        }
+
+      });
+
+
+      return res.status(200).json(separatedData);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
 
   }
 

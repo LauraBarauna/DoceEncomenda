@@ -13,7 +13,7 @@ function OrdersModel() {
     }
   };
 
-  this.showClientOrder = async function name(clientId, OrderId) {
+  this.showClientOrder = async function name(clientId, orderId) {
     const sql = `
     SELECT
       o.label,
@@ -42,12 +42,54 @@ function OrdersModel() {
     `;
 
     try {
-      const order = await db.execute(sql, [clientId, OrderId]);
+      const order = await db.execute(sql, [clientId, orderId]);
 
       return order;
     } catch (error) {
       throw new Error('Error showing order: ' + error.message);
     }
+  };
+
+  this.showAllOrders = async function () {
+    const sql = `
+    SELECT
+      c.first_name,
+      c.last_name,
+      c.email,
+      o.order_id,
+      o.label,
+      o.sweet_type,
+      o.flavor,
+      o.quantity,
+      o.filling,
+      o.allergens,
+      o.special_request,
+      o.payment_method,
+      o.payment_status,
+      o.total_amount,
+      o.status,
+      o.delivery_date,
+      a.label AS address_label,
+      a.street,
+      a.city,
+      a.state,
+      a.complement,
+      a.number,
+      a.cep,
+      a.phone
+    FROM orders o
+    JOIN addresses a ON o.address_id = a.address_id
+    JOIN clients c ON o.client_id = c.client_id
+    `;
+
+    try {
+      const order = db.execute(sql);
+
+      return order;
+    } catch (error) {
+      throw new Error('Error showing all orders: ' + error.message);
+    }
+
 
   }
 

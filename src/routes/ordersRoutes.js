@@ -6,7 +6,8 @@ const middlewares = require('../middlewares/AllMiddlerares');
 const router = express.Router();
 
 router.post('/create', middlewares.authenticateClient, ordersController.store);
-router.get('/:order_id', middlewares.authenticateClient, ordersController.show);
+router.get('/show/:order_id', middlewares.authenticateClient, ordersController.show);
+router.get('/index/', middlewares.authenticateClient, ordersController.index);
 
 module.exports = router;
 
