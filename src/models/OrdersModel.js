@@ -89,7 +89,23 @@ function OrdersModel() {
     } catch (error) {
       throw new Error('Error showing all orders: ' + error.message);
     }
+  };
 
+  this.clientUpdateOrder = async function (clientId, orderId, data) {
+
+    try {
+      const fields = Object.keys(data).map(key => `${key} = ?`).join(", ");
+      const values = Object.values(data);
+      values.push(clientId, orderId);
+
+      const sql = `UPDATE orders SET ${fields} WHERE client_id = ? AND order_id = ?`;
+      const newOrderInfos = await db.query(sql, values);
+
+      return newOrderInfos;
+
+    } catch (error) {
+      throw new Error(`Error updating order ${orderId}:`  + error.message);
+    }
 
   }
 

@@ -34,6 +34,7 @@ function OrdersController() {
       if(!special_request) special_request = null;
 
       const order = await ordersModel.createOrder(label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, client_id, address_id);
+
       res.status(201).json({ message: `Order for client ${client_id} created successfully!` });
     } catch (error) {
       return res.status(500).json({ error: error.message });
@@ -103,6 +104,76 @@ function OrdersController() {
 
       return res.status(200).json(separatedData);
 
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+  };
+
+  this.clientUpdate = async function (req, res) {
+
+    const client_id = req.client_id;
+    const { order_id } = req.params;
+
+    const { label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, address_label } = req.body;
+
+    const arrData = [];
+    const data = {};
+    arrData.push(label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, address_label);
+
+    // for(let i = 0; let < arrData.length; i++) {
+    //   if(arrData[i]) {
+    //     data.arrData[i] = arrData[i];
+    //   }
+    // }
+
+    if(label) data.label = label;
+    if(sweet_type) data.sweet_type = sweet_type;
+    if(flavor) data.flavor = flavor;
+    if(quantity) data.quantity = quantity;
+    if(filling) data.filling = filling;
+    if(allergens) data.allergens = allergens;
+    if(special_request) data.special_request = special_request;
+    if(payment_method) data.payment_method = payment_method;
+    if(delivery_date) data.delivery_date = delivery_date;
+
+
+    if(Object.keys(data).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
+    try {
+
+      if(address_label) {
+        const findAddressPk = await adressesModel.findPkByLabel(address_label, client_id);
+        data.address_id = findAddressPk;
+
+        if(!findAddressPk) {
+          return res.status(500).json({ error: `Client ${client_id} does not have the ${address_label} address!` });
+        }
+
+      }
+
+      const [result] = await ordersModel.clientUpdateOrder(client_id, order_id, data);
+
+      const doesClientHaveTable = result.affectedRows === 0 ? false : true;
+
+      if(!doesClientHaveTable) {
+        return res.status(400).json({ error: `Client ${client_id} does not have that order!` });
+      }
+
+      const today = new Date();
+
+      const [select] = await ordersModel.showClientOrder(client_id, order_id);
+      const orderDeliveryDate = select[0].delivery_date;
+      const dateObjDeliveryDate = new Date(orderDeliveryDate);
+      dateObjDeliveryDate.setDate(dateObjDeliveryDate.getDate() - 3);
+
+      if(dateObjDeliveryDate.getTime() <= today.getTime()) {
+        return res.status(400).json({ error: `You can't update this order anymore, because the delivery date is 3 days close!` });
+      }
+
+      return res.json({ message: `Client ${client_id} updated order ${order_id} successfully!`});
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }

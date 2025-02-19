@@ -35,6 +35,7 @@ function App() {
     this.app.use('/orders', ordersRoutes);
     this.app.use('/orders', ordersRoutes);
     this.app.use('/orders', ordersRoutes);
+    this.app.use('/orders/update', ordersRoutes);
 
     this.app.use('/login', authenticationRoutes);
 
