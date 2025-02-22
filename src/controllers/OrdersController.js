@@ -1,5 +1,6 @@
 const ordersModel = require('../models/OrdersModel');
 const adressesModel = require('../models/AddressesModel');
+const clientModel = require('../models/ClientModel');
 
 function OrdersController() {
 
@@ -131,10 +132,7 @@ function OrdersController() {
 
     const { label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, address_label } = req.body;
 
-    const arrData = [];
     const data = {};
-    arrData.push(label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, address_label);
-
 
     if (label) data.label = label;
     if (sweet_type) data.sweet_type = sweet_type;
@@ -205,6 +203,44 @@ function OrdersController() {
       await ordersModel.deleteOrder(order_id, client_id);
 
       return res.json({ message: `Client ${client_id} deleted order ${order_id} successfully!` });
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  };
+
+  this.adminUpdate = async (req, res) => {
+    const { client_id } = req.params;
+    const { order_id } = req.params;
+
+    const { payment_status, total_amount, status } = req.body;
+
+    const data = {};
+
+    data.payment_status = payment_status ? payment_status : 'waiting_for_payment';
+    data.total_amount = total_amount ? total_amount : null;
+    data.status = status ? status : 'waiting_for_value';
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    };
+
+    try {
+      const [client] = await clientModel.showOneClient(client_id);
+      const [order] = await ordersModel.showClientOrder(client_id, order_id);
+
+      if (!client || client.length === 0) {
+        return res.status(404).json({ message: `Client ${client_id} does not exist!` });
+      };
+
+      if (!order || order.length === 0) {
+        return res.status(404).json({ message: `Client ${client_id} does not have that order!` });
+      };
+
+      await ordersModel.adminUpdateOrder(order_id, client_id, data);
+
+      return res.json({ message: `Order ${order_id} from client ${client_id} was updated successfully!` });
+
 
     } catch (error) {
       return res.status(500).json({ error: error.message });

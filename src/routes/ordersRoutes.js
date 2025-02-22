@@ -10,6 +10,7 @@ router.get('/show/:order_id', middlewares.authenticateClient, ordersController.s
 router.get('/index/', middlewares.authenticateClient, ordersController.index);
 router.put('/client/:order_id', middlewares.authenticateClient, ordersController.clientUpdate);
 router.delete('/:order_id', middlewares.authenticateClient, ordersController.delete);
+router.put('/admin/:client_id/:order_id', ordersController.adminUpdate);
 
 module.exports = router;
 

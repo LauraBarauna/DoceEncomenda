@@ -121,6 +121,22 @@ function OrdersModel() {
 
   };
 
+  this.adminUpdateOrder = async function (orderId, clientId, data) {
+    try {
+      const fields = Object.keys(data).map(key => `${key} = ?`).join(", ");
+      const values = Object.values(data);
+      values.push(clientId, orderId);
+
+      const sql = `UPDATE orders SET ${fields} WHERE client_id = ? AND order_id = ?`;
+      const newOrderInfos = await db.query(sql, values);
+
+      return newOrderInfos;
+
+    } catch (error) {
+      throw new Error(`Error admin updating order ${orderId}:`  + error.message);
+    }
+  };
+
 }
 
 const ordersModel = new OrdersModel();
