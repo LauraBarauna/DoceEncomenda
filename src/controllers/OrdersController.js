@@ -163,21 +163,21 @@ function OrdersController() {
 
       }
 
-      const [result] = await ordersModel.clientUpdateOrder(client_id, order_id, data);
+      const [order] = await ordersModel.showClientOrder(client_id, order_id);
 
-      const doesClientHaveTable = result.affectedRows === 0 ? false : true;
-
-      if (!doesClientHaveTable) {
-        return res.status(400).json({ error: `Client ${client_id} does not have that order!` });
-      }
+      if (!order || order.length === 0) {
+        return res.status(404).json({ message: `Client ${client_id} does not have that order!` });
+      };
 
       const verifyDate = await this.isDeliveryDateCloseTo3Days(client_id, order_id);
 
       if (verifyDate) {
-        return res.status(400).json({ error: `You can't update this order anymore, because the delivery date is 3 days close!` });
+        return res.status(400).json({ error: `You can't delete this order anymore, because the delivery date is 3 days close! To delete, please talk to an admin.` });
       };
 
+      await ordersModel.clientUpdateOrder(client_id, order_id, data);
       return res.json({ message: `Client ${client_id} updated order ${order_id} successfully!` });
+
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -193,7 +193,7 @@ function OrdersController() {
       const [order] = await ordersModel.showClientOrder(client_id, order_id);
 
       if (!order || order.length === 0) {
-        return res.status(404).json({ message: `The order ${order_id} does not exist!` });
+        return res.status(404).json({ message: `Client ${client_id} does not have that order!` });
       };
 
       const verifyDate = await this.isDeliveryDateCloseTo3Days(client_id, order_id);
