@@ -107,7 +107,19 @@ function OrdersModel() {
       throw new Error(`Error updating order ${orderId}:`  + error.message);
     }
 
-  }
+  };
+
+  this.deleteOrder = async function (orderId, clientId) {
+    const sql = 'DELETE FROM orders WHERE order_id = ? AND client_id = ?';
+
+    try {
+      const result = db.execute(sql, [orderId, clientId]);
+      return result;
+    } catch (error) {
+      throw new Error(`Error deleting order ${orderId}:`  + error.message);
+    }
+
+  };
 
 }
 

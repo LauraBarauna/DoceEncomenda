@@ -2,12 +2,26 @@ const ordersModel = require('../models/OrdersModel');
 const adressesModel = require('../models/AddressesModel');
 
 function OrdersController() {
+
+  this.isDeliveryDateCloseTo3Days = async (clientId, orderId) => {
+    const today = new Date();
+
+    const [select] = await ordersModel.showClientOrder(clientId, orderId);
+    const orderDeliveryDate = select[0].delivery_date;
+    const dateObjDeliveryDate = new Date(orderDeliveryDate);
+    dateObjDeliveryDate.setDate(dateObjDeliveryDate.getDate() - 3);
+
+    return dateObjDeliveryDate.getTime() <= today.getTime(); // return true if delivery date is 3 days close to today
+
+  }
+
+
   this.store = async function (req, res) {
 
     try {
 
       const client_id = req.client_id;
-      let {label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, label_address} = req.body;
+      let { label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, label_address } = req.body;
 
       const clientAddressCount = await adressesModel.howManyAddressesDoesClientHave(client_id);
 
@@ -16,22 +30,22 @@ function OrdersController() {
       };
 
 
-      if( !sweet_type || !flavor || !quantity || !payment_method || !delivery_date || !label_address ) {
+      if (!sweet_type || !flavor || !quantity || !payment_method || !delivery_date || !label_address) {
         return res.status(500).json({ error: `Fields: Sweet Type, flavor, quantity, payment method, delivery date and address are requerid!` });
       }
 
       const findAddressPk = await adressesModel.findPkByLabel(label_address, client_id);
 
-      if(!findAddressPk) {
+      if (!findAddressPk) {
         return res.status(500).json({ error: `Client ${client_id} does not have the ${label_address} address!` });
       }
 
       let address_id = findAddressPk;
 
-      if(!label) label = null;
-      if(!filling) filling = null;
-      if(!allergens) allergens = null;
-      if(!special_request) special_request = null;
+      if (!label) label = null;
+      if (!filling) filling = null;
+      if (!allergens) allergens = null;
+      if (!special_request) special_request = null;
 
       const order = await ordersModel.createOrder(label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, client_id, address_id);
 
@@ -49,8 +63,8 @@ function OrdersController() {
 
       const [order] = await ordersModel.showClientOrder(client_id, order_id);
 
-      if(!order || order.length === 0) {
-        return res.status(404).json({message: `The order ${order_id} does not exist!`});
+      if (!order || order.length === 0) {
+        return res.status(404).json({ message: `The order ${order_id} does not exist!` });
       };
 
       const ordersKeys = Object.keys(order[0]).slice(0, 12);
@@ -78,8 +92,8 @@ function OrdersController() {
 
       const [orders] = await ordersModel.showAllOrders();
 
-      if(!orders || orders.length === 0) {
-        return res.status(404).json({message: `There is no order`});
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: `There is no order` });
       };
 
       const separatedData = orders.map(order => {
@@ -110,7 +124,7 @@ function OrdersController() {
 
   };
 
-  this.clientUpdate = async function (req, res) {
+  this.clientUpdate = async (req, res) => {
 
     const client_id = req.client_id;
     const { order_id } = req.params;
@@ -121,34 +135,29 @@ function OrdersController() {
     const data = {};
     arrData.push(label, sweet_type, flavor, quantity, filling, allergens, special_request, payment_method, delivery_date, address_label);
 
-    // for(let i = 0; let < arrData.length; i++) {
-    //   if(arrData[i]) {
-    //     data.arrData[i] = arrData[i];
-    //   }
-    // }
 
-    if(label) data.label = label;
-    if(sweet_type) data.sweet_type = sweet_type;
-    if(flavor) data.flavor = flavor;
-    if(quantity) data.quantity = quantity;
-    if(filling) data.filling = filling;
-    if(allergens) data.allergens = allergens;
-    if(special_request) data.special_request = special_request;
-    if(payment_method) data.payment_method = payment_method;
-    if(delivery_date) data.delivery_date = delivery_date;
+    if (label) data.label = label;
+    if (sweet_type) data.sweet_type = sweet_type;
+    if (flavor) data.flavor = flavor;
+    if (quantity) data.quantity = quantity;
+    if (filling) data.filling = filling;
+    if (allergens) data.allergens = allergens;
+    if (special_request) data.special_request = special_request;
+    if (payment_method) data.payment_method = payment_method;
+    if (delivery_date) data.delivery_date = delivery_date;
 
 
-    if(Object.keys(data).length === 0) {
+    if (Object.keys(data).length === 0) {
       return res.status(400).json({ error: "No fields to update" });
     }
 
     try {
 
-      if(address_label) {
+      if (address_label) {
         const findAddressPk = await adressesModel.findPkByLabel(address_label, client_id);
         data.address_id = findAddressPk;
 
-        if(!findAddressPk) {
+        if (!findAddressPk) {
           return res.status(500).json({ error: `Client ${client_id} does not have the ${address_label} address!` });
         }
 
@@ -158,26 +167,48 @@ function OrdersController() {
 
       const doesClientHaveTable = result.affectedRows === 0 ? false : true;
 
-      if(!doesClientHaveTable) {
+      if (!doesClientHaveTable) {
         return res.status(400).json({ error: `Client ${client_id} does not have that order!` });
       }
 
-      const today = new Date();
+      const verifyDate = await this.isDeliveryDateCloseTo3Days(client_id, order_id);
 
-      const [select] = await ordersModel.showClientOrder(client_id, order_id);
-      const orderDeliveryDate = select[0].delivery_date;
-      const dateObjDeliveryDate = new Date(orderDeliveryDate);
-      dateObjDeliveryDate.setDate(dateObjDeliveryDate.getDate() - 3);
-
-      if(dateObjDeliveryDate.getTime() <= today.getTime()) {
+      if (verifyDate) {
         return res.status(400).json({ error: `You can't update this order anymore, because the delivery date is 3 days close!` });
-      }
+      };
 
-      return res.json({ message: `Client ${client_id} updated order ${order_id} successfully!`});
+      return res.json({ message: `Client ${client_id} updated order ${order_id} successfully!` });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
 
+  };
+
+  this.delete = async (req, res) => {
+    const client_id = req.client_id;
+    const { order_id } = req.params;
+
+    try {
+
+      const [order] = await ordersModel.showClientOrder(client_id, order_id);
+
+      if (!order || order.length === 0) {
+        return res.status(404).json({ message: `The order ${order_id} does not exist!` });
+      };
+
+      const verifyDate = await this.isDeliveryDateCloseTo3Days(client_id, order_id);
+
+      if (verifyDate) {
+        return res.status(400).json({ error: `You can't delete this order anymore, because the delivery date is 3 days close! To delete, please talk to an admin.` });
+      };
+
+      await ordersModel.deleteOrder(order_id, client_id);
+
+      return res.json({ message: `Client ${client_id} deleted order ${order_id} successfully!` });
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
   }
 
 
