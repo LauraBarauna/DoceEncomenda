@@ -42,6 +42,18 @@ function ClientModel() {
 
   };
 
+  this.showClientPassword = async function (clientId) {
+    const sql = 'SELECT password FROM clients WHERE client_id = ?';
+
+    try {
+      const password = await db.execute(sql, [clientId]);
+      return password;
+    } catch (error) {
+      throw new Error(`Error displaying client ${clientId} password: ${error.message}`);
+    }
+
+  };
+
   this.updateClient = async function (clientId, data) {
     try {
       const fields = Object.keys(data).map((key) => `${key} = ?`).join(", ");
