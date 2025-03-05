@@ -4,6 +4,7 @@ const clientRoutes = require('./src/routes/clientRoutes');
 const addressesRoutes = require('./src/routes/addressesRoutes');
 const ordersRoutes = require('./src/routes/ordersRoutes');
 const authenticationRoutes = require('./src/routes/authenticationRoutes');
+const adminRoutes = require('./src/routes/adminRoutes');
 
 function App() {
   this.app = express();
@@ -38,6 +39,8 @@ function App() {
     this.app.use('/orders/update', ordersRoutes);
     this.app.use('/orders/delete', ordersRoutes);
     this.app.use('/orders/update', ordersRoutes);
+
+    this.app.use('/admins/register', adminRoutes);
 
     this.app.use('/login', authenticationRoutes);
 
