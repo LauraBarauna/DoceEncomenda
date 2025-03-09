@@ -41,6 +41,7 @@ function App() {
     this.app.use('/orders/update', ordersRoutes);
 
     this.app.use('/admins/register', adminRoutes);
+    this.app.use('/admins/index', adminRoutes);
 
     this.app.use('/login', authenticationRoutes);
 
