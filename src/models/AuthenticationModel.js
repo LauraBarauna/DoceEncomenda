@@ -26,6 +26,30 @@ function AuthenticationModel() {
       throw new Error(`Error finding admin's credeantials by ${email}` + error.message);
     }
 
+  };
+
+  this.isClientAdmin = async function (clientId) {
+    const sql = 'SELECT admin_id, client_id FROM admins WHERE client_id = ?';
+
+    try {
+      const result = await db.execute(sql, [clientId]);
+      return result;
+    } catch (error) {
+      throw new Error(`Error verifying client ${clientId} is a Admin: ${error.message}`);
+    }
+
+  };
+
+  this.isAdminClient = async function (adminId) {
+    const sql = 'SELECT client_id FROM admins WHERE admin_id = ?';
+
+    try {
+      const result = await db.execute(sql, [adminId]);
+      return result;
+    } catch (error) {
+      throw new Error(`Error verifying admin ${adminId} is a Client: ${error.message}`);
+    }
+
   }
 
 };
