@@ -24,7 +24,19 @@ function AdminModel() {
     } catch (error) {
       throw new Error('Error showing admins: ' +error);
     }
+  };
 
+  this.showOneAdmin = async function (adminId) {
+    const sql = 'SELECT admin_id, first_name, last_name, email, age, client_id FROM admins WHERE admin_id = ?';
+
+    try {
+
+      const result = await db.execute(sql, [adminId]);
+      return result;
+
+    } catch (error) {
+      throw new Error(`Error showing ${adminId} admin: ${error}`);
+    }
 
   }
 

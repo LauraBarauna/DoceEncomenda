@@ -57,6 +57,27 @@ function AdminController() {
       return res.status(500).json({ error: error.message });
     }
 
+  };
+
+  this.show = async function (req, res) {
+
+    const admin_id = req.admin_id;
+
+    try {
+
+      const [result] = await adminModel.showOneAdmin(admin_id);
+
+      if(!result || result.length === 0) {
+        return res.status(404).json({ error: `Admin ${admin_id} not found` });
+      };
+
+      return res.status(200).json(result);
+
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
   }
 
 
