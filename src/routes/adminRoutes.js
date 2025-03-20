@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/', adminController.store);
 router.get('/', middlewares.authenticateAdmin, adminController.index);
 router.get('/show', middlewares.authenticateAdmin, adminController.show);
+router.delete('/', middlewares.authenticateAdmin, adminController.delete);
 
 
 module.exports = router;

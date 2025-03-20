@@ -38,7 +38,21 @@ function AdminModel() {
       throw new Error(`Error showing ${adminId} admin: ${error}`);
     }
 
-  }
+  };
+
+  this.deleteAdmin = async function (adminId) {
+    const sql = 'DELETE FROM admins WHERE admin_id = ?';
+
+    try {
+
+      const result = await db.execute(sql, [adminId]);
+      return result;
+
+    } catch (error) {
+      throw new Error(`Error deleting ${adminId} admin: ${error}`);
+    }
+
+  };
 
 
 

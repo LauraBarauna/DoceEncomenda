@@ -78,6 +78,25 @@ function AdminController() {
       return res.status(500).json({ error: error.message });
     }
 
+  };
+
+  this.delete = async function (req, res) {
+    const admin_id = req.admin_id;
+
+    try {
+
+      const [result] = await adminModel.deleteAdmin(admin_id);
+      const doesAdminExist = result.affectedRows;
+
+      if(doesAdminExist === 0) {
+        return res.status(404).json({ error: `Admin ${admin_id} does not exist` });
+      };
+
+      return res.status(200).json(`Admin ${admin_id} deleted`);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
   }
 
 
