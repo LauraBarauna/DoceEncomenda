@@ -67,7 +67,7 @@ function AdminController() {
 
       const [result] = await adminModel.showOneAdmin(admin_id);
 
-      if(!result || result.length === 0) {
+      if (!result || result.length === 0) {
         return res.status(404).json({ error: `Admin ${admin_id} not found` });
       };
 
@@ -88,7 +88,7 @@ function AdminController() {
       const [result] = await adminModel.deleteAdmin(admin_id);
       const doesAdminExist = result.affectedRows;
 
-      if(doesAdminExist === 0) {
+      if (doesAdminExist === 0) {
         return res.status(404).json({ error: `Admin ${admin_id} does not exist` });
       };
 
@@ -97,6 +97,39 @@ function AdminController() {
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
+  };
+
+  this.update = async function (req, res) {
+
+    try {
+      const admin_id = req.admin_id;
+      const { first_name, last_name, email, password, age } = req.body;
+
+      const updatedData = {};
+      if (first_name) updatedData.first_name = first_name;
+      if (last_name) updatedData.last_name = last_name;
+      if (email) updatedData.email = email;
+      if (password) updatedData.password = bcrypt.hashSync(password, 8);
+      if (age) updatedData.age = age;
+
+      if (Object.keys(updatedData).length === 0) {
+        return res.status(400).json({ error: "No fields to update" });
+      };
+
+      const [result] = await adminModel.updateAdmin(admin_id, updatedData);
+      const doesAdminExist = result.affectedRows;
+
+      if (doesAdminExist === 0) {
+        return res.status(404).json({ error: `Admin ${admin_id} does not exist` });
+      };
+
+      return res.json(result);
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+
   }
 
 
