@@ -116,7 +116,7 @@ function AdminController() {
         return res.status(400).json({ error: "No fields to update" });
       };
 
-      const [result] = await adminModel.updateAdmin(admin_id, updatedData);
+      const [result] = await adminModel.syncAdminWithClient(admin_id, updatedData);
       const doesAdminExist = result.affectedRows;
 
       if (doesAdminExist === 0) {

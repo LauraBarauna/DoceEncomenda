@@ -1,6 +1,29 @@
 const db = require('../database/db');
+const adminModel = require('./AdminModel');
+const AdminClientModel = require('./AdminClientModel');
 
 function ClientModel() {
+
+  this.getAdminId = async function (clientId) {
+    const sql = "SELECT admin_id FROM admins WHERE client_id = ?";
+    const query = "SELECT COUNT(*) AS TOTAL FROM admins WHERE client_id = ?";
+
+    try {
+
+      const [totalClient] = await db.execute(query, [clientId]);
+
+      if(totalClient[0].TOTAL === 0) {
+        return null;
+      }
+
+      const [result] = await db.execute(sql, [clientId]);
+      return result[0].admin_id;
+
+    } catch (error) {
+      throw new Error(`Error getting admin_id from client ${clientId}: ` + error.message);
+    }
+
+  }
 
   this.createClient = async function (firstName, lastName, email, password, age) {
 
@@ -54,19 +77,23 @@ function ClientModel() {
 
   };
 
-  this.updateClient = async function (clientId, data) {
-    try {
-      const fields = Object.keys(data).map((key) => `${key} = ?`).join(", ");
-      const values = Object.values(data);
-      values.push(clientId);
+    this.updateCliente = async function (clientId, data) {
+      try {
+        const fields = Object.keys(data).map((key) => `${key} = ?`).join(", ");
+        const values = Object.values(data);
+        values.push(clientId);
 
-      const query = `UPDATE clients SET ${fields} WHERE client_id = ?`;
-      const [newClientInfos] = await db.query(query, values);
+        const query = `UPDATE clients SET ${fields} WHERE client_id = ?`;
+        const [newClientInfos] = await db.query(query, values);
 
-      return newClientInfos;
-    } catch (error) {
-      throw new Error(`Error updating client ${clientId}: ${error.message}`);
-    }
+        return newClientInfos;
+      } catch (error) {
+        throw new Error(`Error updating ${clientId} admin: ${error}`);
+      }
+    };
+
+  this.syncClientWithAdmin = async function (clientId, data) {
+    return AdminClientModel.updateClientAndAdmin(clientId, data);
   }
 
   this.deleteClient = async function (clientId) {

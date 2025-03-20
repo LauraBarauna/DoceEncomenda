@@ -64,7 +64,7 @@ function ClientController() {
         return res.status(400).json({ error: "No fields to update" });
       };
 
-      const result = await clientModel.updateClient(client_id, updatedData);
+      const result = await clientModel.syncClientWithAdmin(client_id, updatedData);
       const doesClientExist = result.affectedRows;
 
       if(doesClientExist === 0) {
